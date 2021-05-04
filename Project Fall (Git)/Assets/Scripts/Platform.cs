@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Platform : MonoBehaviour
 {
-
     [SerializeField]
     private InputHandler inputHandler;
 
@@ -31,7 +30,8 @@ public class Platform : MonoBehaviour
 
     void Start() 
     {
-        SetCurrentPlatform(true);
+        if (inputHandler == null)
+			inputHandler = GameObject.FindGameObjectWithTag("Input Handler").GetComponent<InputHandler>();
     }
 
     // Update is called once per frame
@@ -54,6 +54,11 @@ public class Platform : MonoBehaviour
         hasCollided = true;
     }
 
+    public bool CollisionCheck()
+    {
+        return hasCollided;
+    }
+
     public void SetCurrentPlatform(bool i)
     {
         if (i)
@@ -67,19 +72,26 @@ public class Platform : MonoBehaviour
         if (!i)
         {
             isCurrentPlatform = false;
+            hasCollided = false;
             bc2d.enabled = false;
             StartCoroutine(FadeTo(.5f, 0.25f));
         }
+    }
 
-        IEnumerator FadeTo(float aValue, float aTime)
+    public void SetWinPlatform()
+    {
+        sr2d.color = new Color(0f, 191 / 255f, 1f, .5f);
+        transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y * .75f, transform.localScale.z);
+    }
+
+    IEnumerator FadeTo(float aValue, float aTime)
+    {
+        float alpha = sr2d.color.a;
+        for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / aTime)
         {
-            float alpha = sr2d.color.a;
-            for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / aTime)
-            {
-                Color newColor = new Color(sr2d.color.r, sr2d.color.g, sr2d.color.b, Mathf.Lerp(alpha, aValue, t));
-                sr2d.color = newColor;
-                yield return null;
-            }
+            Color newColor = new Color(sr2d.color.r, sr2d.color.g, sr2d.color.b, Mathf.Lerp(alpha, aValue, t));
+            sr2d.color = newColor;
+            yield return null;
         }
     }
 }
