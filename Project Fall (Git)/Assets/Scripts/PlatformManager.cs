@@ -55,7 +55,7 @@ public class PlatformManager : MonoBehaviour
 
     void GetPlatformSwitch()
     {
-        if (inputHandler.GetSwitchInput() && platformComponents[pIndex].CollisionCheck() && pIndex < maxIndex)
+        if (inputHandler.GetSwitchInput() && platformComponents[pIndex].CollisionCheck() && pIndex < maxIndex && !platformComponents[pIndex + 1].TriggerCheck())
         {
             platformComponents[pIndex].SetCurrentPlatform(false);
 

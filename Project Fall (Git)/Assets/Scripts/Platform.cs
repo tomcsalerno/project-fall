@@ -13,6 +13,7 @@ public class Platform : MonoBehaviour
     float movement;
     bool isCurrentPlatform = false;
     bool hasCollided = false;
+    bool isTriggered = false;
 
     SpriteRenderer sr2d;
     BoxCollider2D bc2d;
@@ -25,13 +26,13 @@ public class Platform : MonoBehaviour
 
         // Setting platform color and disabling their colliders
         sr2d.color = new Color(sr2d.color.r, sr2d.color.g, sr2d.color.b, .5f);
-        bc2d.enabled = false;
+        bc2d.isTrigger = true;
     }
 
-    void Start() 
+    void Start()
     {
         if (inputHandler == null)
-			inputHandler = GameObject.FindGameObjectWithTag("Input Handler").GetComponent<InputHandler>();
+            inputHandler = GameObject.FindGameObjectWithTag("Input Handler").GetComponent<InputHandler>();
     }
 
     // Update is called once per frame
@@ -54,9 +55,24 @@ public class Platform : MonoBehaviour
         hasCollided = true;
     }
 
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        isTriggered = true;
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        isTriggered = false;
+    }
+
     public bool CollisionCheck()
     {
         return hasCollided;
+    }
+
+    public bool TriggerCheck()
+    {
+        return isTriggered;
     }
 
     public void SetCurrentPlatform(bool i)
@@ -64,7 +80,7 @@ public class Platform : MonoBehaviour
         if (i)
         {
             isCurrentPlatform = true;
-            bc2d.enabled = true;
+            bc2d.isTrigger = false;
             StartCoroutine(FadeTo(1f, 0.25f));
             return;
         }
