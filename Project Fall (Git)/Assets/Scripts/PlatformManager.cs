@@ -6,8 +6,7 @@ using UnityEngine.SceneManagement;
 public class PlatformManager : MonoBehaviour
 {
     public InputHandler inputHandler;
-    [SerializeField] GameObject[] platforms;
-    [SerializeField] Platform[] platformComponents;
+    [SerializeField] Platform[] platforms;
 
     bool gameStarted = false;
 
@@ -30,8 +29,7 @@ public class PlatformManager : MonoBehaviour
         {
             if (inputHandler.GetSwitchInput())
             {
-                FillPlatformArrays();
-                SetFirstLastPlatforms();
+                FillPlatformArray();
 
                 GameObject.FindGameObjectWithTag("Player").GetComponent<Rigidbody2D>().gravityScale = 1;
 
@@ -55,28 +53,37 @@ public class PlatformManager : MonoBehaviour
 
     void GetPlatformSwitch()
     {
-        if (inputHandler.GetSwitchInput() && platformComponents[pIndex].CollisionCheck() && pIndex < maxIndex && !platformComponents[pIndex + 1].TriggerCheck())
+        if (inputHandler.GetSwitchInput() && platforms[pIndex].CollisionCheck() && pIndex < maxIndex && !platforms[pIndex + 1].TriggerCheck())
         {
-            platformComponents[pIndex].SetCurrentPlatform(false);
+            platforms[pIndex].SetCurrentPlatform(false);
 
             pIndex++;
 
-            platformComponents[pIndex].SetCurrentPlatform(true);
+            platforms[pIndex].SetCurrentPlatform(true);
         }
     }
 
-    void FillPlatformArrays()
+    void FillPlatformArray()
     {
         // Finds all platform gmae objects and puts them into an array
-        platforms = GameObject.FindGameObjectsWithTag("Platform");
+        GameObject[] gos = GameObject.FindGameObjectsWithTag("Platform");
+
+        platforms = new Platform[gos.Length];
+        for (int i = 0; i < gos.Length; i++)
+        {
+            platforms[i] = gos[i].GetComponent<Platform>();
+        }
 
         maxIndex = platforms.Length - 1;
+
+        Debug.Log(platforms.Length);
+        Debug.Log(maxIndex);
 
         for (int i = 0; i < maxIndex; i++)
         {
             if (platforms[i].transform.position.y < platforms[i + 1].transform.position.y)
             {
-                GameObject temp = platforms[i];
+                Platform temp = platforms[i];
                 platforms[i] = platforms[i + 1];
                 platforms[i + 1] = temp;
 
@@ -84,27 +91,17 @@ public class PlatformManager : MonoBehaviour
             }
         }
 
-        platformComponents = new Platform[platforms.Length];
-
-        for (int i = 0; i < platforms.Length; i++)
-        {
-            platformComponents[i] = platforms[i].GetComponent<Platform>();
-        }
-    }
-
-    void SetFirstLastPlatforms()
-    {
         // Sets the first platform to current platform
-        platformComponents[pIndex].SetCurrentPlatform(true);
+        platforms[pIndex].SetCurrentPlatform(true);
         // Sets last platform as winning platform
-        platformComponents[maxIndex].SetWinPlatform();
+        platforms[maxIndex].SetWinPlatform();
     }
 
     public void WinCollisionCheck()
     {
-        if (platformComponents[maxIndex].CollisionCheck())
+        if (platforms[maxIndex].CollisionCheck())
         {
-            platformComponents[pIndex].SetCurrentPlatform(false);
+            platforms[pIndex].SetCurrentPlatform(false);
             StartCoroutine(PlayerHasWon());
         }
     }
