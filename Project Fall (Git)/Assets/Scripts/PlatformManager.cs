@@ -76,9 +76,6 @@ public class PlatformManager : MonoBehaviour
 
         maxIndex = platforms.Length - 1;
 
-        Debug.Log(platforms.Length);
-        Debug.Log(maxIndex);
-
         for (int i = 0; i < maxIndex; i++)
         {
             if (platforms[i].transform.position.y < platforms[i + 1].transform.position.y)
