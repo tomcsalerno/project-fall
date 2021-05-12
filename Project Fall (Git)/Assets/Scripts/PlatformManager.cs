@@ -88,6 +88,11 @@ public class PlatformManager : MonoBehaviour
             }
         }
 
+        foreach (Platform p in platforms)
+        {
+            p.OnGameStart();
+        }
+
         // Sets the first platform to current platform
         platforms[pIndex].SetCurrentPlatform(true);
         // Sets last platform as winning platform

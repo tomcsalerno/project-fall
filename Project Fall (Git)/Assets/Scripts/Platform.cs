@@ -23,10 +23,6 @@ public class Platform : MonoBehaviour
         // Puts Sprite Renderer and Box Collider into variables
         sr2d = GetComponent<SpriteRenderer>();
         bc2d = GetComponent<BoxCollider2D>();
-
-        // Setting platform color and disabling their colliders
-        sr2d.color = new Color(sr2d.color.r, sr2d.color.g, sr2d.color.b, .5f);
-        bc2d.isTrigger = true;
     }
 
     void Start()
@@ -73,6 +69,12 @@ public class Platform : MonoBehaviour
     public bool TriggerCheck()
     {
         return isTriggered;
+    }
+
+    public void OnGameStart() {
+        // Setting platform color and disabling their colliders
+        StartCoroutine(FadeTo(.5f, 0.25f));
+        bc2d.isTrigger = true;
     }
 
     public void SetCurrentPlatform(bool i)
