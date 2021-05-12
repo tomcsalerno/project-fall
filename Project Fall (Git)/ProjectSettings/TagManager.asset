@@ -8,6 +8,7 @@ TagManager:
   - Game Manager
   - Input Handler
   - Platform Manager
+  - OOB
   layers:
   - Default
   - TransparentFX

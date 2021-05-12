@@ -5,8 +5,11 @@ using UnityEngine.SceneManagement;
 
 public class PlatformManager : MonoBehaviour
 {
+    public GameManager gameManager;
     public InputHandler inputHandler;
     [SerializeField] Platform[] platforms;
+
+    public GameObject player;
 
     bool gameStarted = false;
 
@@ -16,6 +19,8 @@ public class PlatformManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (gameManager == null)
+            gameManager = FindObjectOfType<GameManager>();
         if (inputHandler == null)
             inputHandler = GameObject.FindGameObjectWithTag("Input Handler").GetComponent<InputHandler>();
 
@@ -46,8 +51,11 @@ public class PlatformManager : MonoBehaviour
 
             if (inputHandler.GetRestartInput())
             {
-                RestartScene();
+                gameManager.RestartRequest();
             }
+
+            if (player.transform.position.y < platforms[maxIndex].transform.position.y - 3)
+                gameManager.RestartRequest();
         }
     }
 
@@ -65,7 +73,7 @@ public class PlatformManager : MonoBehaviour
 
     void FillPlatformArray()
     {
-        // Finds all platform gmae objects and puts them into an array
+        // Finds all platform game objects and puts them into an array
         GameObject[] gos = GameObject.FindGameObjectsWithTag("Platform");
 
         platforms = new Platform[gos.Length];
@@ -104,22 +112,7 @@ public class PlatformManager : MonoBehaviour
         if (platforms[maxIndex].CollisionCheck())
         {
             platforms[pIndex].SetCurrentPlatform(false);
-            StartCoroutine(PlayerHasWon());
+            gameManager.GameOver();
         }
-    }
-
-    IEnumerator PlayerHasWon()
-    {
-        Time.timeScale = 0.5f;
-
-        yield return new WaitForSeconds(.75f);
-
-        RestartScene();
-    }
-
-    void RestartScene()
-    {
-        Time.timeScale = 1f;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

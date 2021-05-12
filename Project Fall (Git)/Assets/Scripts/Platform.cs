@@ -107,8 +107,7 @@ public class Platform : MonoBehaviour
         float alpha = sr2d.color.a;
         for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / aTime)
         {
-            Color newColor = new Color(sr2d.color.r, sr2d.color.g, sr2d.color.b, Mathf.Lerp(alpha, aValue, t));
-            sr2d.color = newColor;
+            sr2d.color = new Color(sr2d.color.r, sr2d.color.g, sr2d.color.b, Mathf.Lerp(alpha, aValue, t));
             yield return null;
         }
     }
