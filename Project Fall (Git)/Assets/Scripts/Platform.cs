@@ -110,5 +110,6 @@ public class Platform : MonoBehaviour
             sr2d.color = new Color(sr2d.color.r, sr2d.color.g, sr2d.color.b, Mathf.Lerp(alpha, aValue, t));
             yield return null;
         }
+        sr2d.color = new Color(sr2d.color.r, sr2d.color.g, sr2d.color.b, aValue);
     }
 }
